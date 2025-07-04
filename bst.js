@@ -74,6 +74,10 @@ class Tree {
 
     // Traverse Tree
     while (currentNode !== null && isTrue === false) {
+      if (currentNode.root === value) {
+        deleteNode = currentNode;
+        break;
+      }
       // Traverse left
       if (currentNode.root > value) {
         // Found Value on left
@@ -130,8 +134,12 @@ class Tree {
       }
       // Node has two children
     } else {
+      // Find lowest node is right subtree
       let IOS = this.findIOS(currentNode);
-      console.log(IOS);
+      // Replace root of deleted node with IOS and delete the IOS node
+      let value = IOS.root;
+      this.delete(value);
+      currentNode.root = value;
     }
   }
 
@@ -160,5 +168,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 let test = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 test.insert(6346);
 prettyPrint(test.root);
-test.delete(8);
+test.delete(67);
 prettyPrint(test.root);
