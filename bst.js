@@ -272,6 +272,87 @@ class Tree {
     return side;
   }
 
+  depth(value) {
+    let node = this.find(value);
+    let depth = 0;
+
+    if (node === "Node not found") {
+      return null;
+    } else {
+      let currentNode = this.root;
+      while (currentNode.root != value) {
+        if (currentNode.root < value) {
+          currentNode = currentNode.right;
+          depth++;
+        } else {
+          currentNode = currentNode.left;
+          depth++;
+        }
+      }
+      return depth;
+    }
+  }
+
+  isBalanced() {
+    let balanced = true;
+    this.levelOrderForEach(node => {
+      if (!this.checkBalance(node)) {
+        balanced = false;
+      }
+    })
+
+    return balanced;
+  };
+  
+  checkBalance(node) {
+    // Find right most root
+    let rightroot = this.findRightMostRoot(node)
+
+    // Find left most root
+    let leftroot = this.findLeftMostRoot(node)
+
+    let right = this.depth(rightroot);
+    let left = this.depth(leftroot)
+
+    if ((right - left) > 1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  findRightMostRoot(node) {
+    let rightroot = node.root;
+
+    while (node.right != null) {
+      node = node.right;
+      rightroot = node.root;
+    }
+
+    return rightroot;
+  }
+
+  findLeftMostRoot(node) {
+    let leftroot = node.root;
+
+    while (node.left != null) {
+      node = node.left;
+      leftroot = node.root;
+    }
+
+    return leftroot;
+  }
+
+  rebalance() {
+    let rootsInTree = [];
+    this.preOrderForEach(node => {
+      rootsInTree.push(node.root)
+    })
+
+    const uniqueArray = [...new Set(rootsInTree)];
+    uniqueArray.sort((a, b) => a - b);
+    this.root = this.buildTree(uniqueArray, 0, uniqueArray.length - 1);
+  }
 }
 
 
@@ -289,14 +370,23 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
-let test = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-test.insert(6346);
-test.insert(6347);
-test.insert(6348);
+let test = new Tree([8, 14, 18, 25, 26, 28, 33, 34, 35, 42, 44, 48, 53, 58, 74, 78, 79, 89, 95, 99]);
 prettyPrint(test.root);
-test.delete(67);
+console.log(test.isBalanced());
+test.insert(138);
+test.insert(140);
+test.insert(144);
+test.insert(149);
+test.insert(154);
+test.insert(155);
+test.insert(157);
+test.insert(167);
+test.insert(180);
+test.insert(182);
+console.log(test.isBalanced());
+test.rebalance();
+console.log(test.isBalanced());
 prettyPrint(test.root);
-// console.log(test.find(6345));
 
 // test.levelOrderForEach(node => {
 //   console.log(node.root);
@@ -314,4 +404,8 @@ prettyPrint(test.root);
 //   console.log(node.root);
 // })
 
-console.log(test.height(test.root));
+// console.log(test.depth(6348));
+// console.log(test.depth(1));
+// console.log(test.isBalanced());
+// test.rebalance();
+// console.log(test.isBalanced());
